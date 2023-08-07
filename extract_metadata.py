@@ -1,3 +1,4 @@
+import jsonlines
 from DocumentProfile import DocumentProfile
 from secrets import list_of_files
 from pathlib import Path
@@ -65,14 +66,11 @@ def convert_to_bytes(input):
     return bytes.fromhex(input) # Converts a string that contains a hex number into that number. Simple but this looks cleaner.
 
 def save_json_file(records, directory_name):
-    result = ""
-    filename_to_use = f"metadata for {directory_name}.json"
-    with open(filename_to_use, "a") as write_file:
+    filename_to_use = f"metadata for {directory_name}.jsonl"
+    print(f"Saving {filename_to_use}...")
+    with jsonlines.open(filename_to_use, mode='w') as writer:
         for record in records:
-            result = record.toJSON() + "\r\n"
-            write_file.write(result)
-            # print(result) # Debug
-        print(f"Wrote {filename_to_use}!")
+            writer.write(record.__dict__)
 
 # Now that everything's defined, run the dang thing!
 if __name__ == "__main__":
