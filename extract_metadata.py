@@ -76,6 +76,16 @@ def save_json_file(records, directory_name):
 if __name__ == "__main__":
     main()
 
+# TODO: Make it so you can just give it the folder name, like
+#       "Mss005_0001". It seems there are variations in the names of the
+#       subfolders... There's "PFAL000S", "PFFL0029", "PFMS001G",
+#       "PA_2000_"... And not all of them start with "P", so we can't narrow
+#       it down by that...
+#       Some of them don't even have all the Alchemy EXEs and are just
+#       a single data folder...
+#       Worst-case scenario, whoever runs this to extract the data will need to go
+#       into each CD and find the exact path of the .PRO file.
+
 # TODO: Generally clean up the code.
 
 # TODO: Download more disks and figure out the folder structure so users can specify
