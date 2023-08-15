@@ -1,12 +1,12 @@
 import jsonlines
 from DocumentProfile import DocumentProfile
-from secrets import list_of_files
+from secrets import list_of_metadata_files
 from pathlib import Path
 
 def main():
-    for filename in list_of_files:
+    for filename in list_of_metadata_files:
         current_title = get_cdrom_name(filename)
-
+        print(current_title)
         with open(filename, 'rb') as f:
             data = f.read() # This "data" variable is where the entire file's contents is going to be stored
 
@@ -90,3 +90,6 @@ if __name__ == "__main__":
 
 # TODO: Download more disks and figure out the folder structure so users can specify
 #       the location of the disk and not have to hunt down the specific file
+
+# TODO: Lines 19-27 should be a helper method that returns all_start_offsets.
+#       It is also used in extract_tiffs.py
