@@ -1,16 +1,25 @@
+import os
 from secrets import list_of_TIFF_blobs
 from pathlib import Path
 
 def main():
     for filename in list_of_TIFF_blobs:
-        current_title = get_cdrom_name(filename) #This should be identical to the folder name extract_metadata.py gets
+        cdrom_name = get_cdrom_name(filename) # This should be identical to the folder name extract_metadata.py gets
 
         with open(filename, 'rb') as f:
             data = f.read() # This "data" variable is where the entire file's contents is going to be stored
 
         all_TIFFs = extract(data)
-        # TODO: Save each TIFF file!
-        # Dump everything in a folder called the name of the CD (stored in current_title above!)
+        save_tiff_files(all_TIFFs, cdrom_name)
+
+def save_tiff_files(all_TIFFs, output_folder):
+    os.makedirs(output_folder, exist_ok=True) # The folder we're saving the TIFFs to
+    for index, tiff_data in enumerate(all_TIFFs):
+        tiff_filename = f"{output_folder}/page{index + 1}.tiff"
+        with open(tiff_filename, 'wb') as tiff_file:
+            tiff_file.write(tiff_data) # Save the file!
+        print(f"Extracted {tiff_filename}")
+
 
 def extract(data):
     separated_TIFF_files = []
