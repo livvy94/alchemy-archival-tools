@@ -5,31 +5,24 @@ from pathlib import Path
 
 def main():
     for filename in list_of_metadata_files:
-        current_title = get_cdrom_name(filename)
-        print(current_title)
+        cdrom_name = get_cdrom_name(filename)
+        print(cdrom_name)
         with open(filename, 'rb') as f:
             data = f.read() # This "data" variable is where the entire file's contents is going to be stored
 
         records = extract(data)
-        save_json_file(records, current_title)
+        save_json_file(records, cdrom_name)
 
 ########################################################################
 
 def extract(data):
-    start_code = convert_to_bytes('0023000A') # This code is right before the data starts
-    # Note to self: Each of the fields are separated by codes that start with [00 07 01] followed by three more bytes.
-
-    # Find the location of each record in the file
-    all_start_offsets = []
-    pos = data.find(start_code) # Find the first instance of the start code
-    while pos != -1: # Loop until it can't find any more
-      all_start_offsets.append(pos)
-      pos = data.find(start_code, pos + 1) # Look for another one!
+    start_code = '0023000A' # Every record starts with these hex numbers
+    metadata_offsets = get_list_of_offsets(data, start_code)
     
     # Extract each record present
     index = 0 # Keep track of how many records we've looked at
     records = [] # This will contain instances of DocumentProfile
-    for start_offset in all_start_offsets: # Loop through each record
+    for start_offset in metadata_offsets: # Loop through each record
         result = []
         current_offset = start_offset + len(start_code) # Keep track of where we are, starting at the start of the current record
         
@@ -38,7 +31,7 @@ def extract(data):
         ein = get_text(data, current_offset, ein_end_offset)
         result.append(ein)
 
-        if index >= len(all_start_offsets):
+        if index >= len(metadata_offsets):
             break # Skip the rest of this if there aren't any more records to read
 
         for x in range(8): # Each record has eight fields
@@ -47,7 +40,7 @@ def extract(data):
             line = get_text(data, current_offset, next_offset) # Get the text!
             result.append(line)
         
-        current_offset = data.find(start_code, current_offset + 1) # Set the current offset to the start of the next record.
+        current_offset = data.find(convert_to_bytes(start_code), (current_offset + 1)) # Set the current offset to the start of the next record.
 
         temp = DocumentProfile(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
         records.append(temp)
@@ -59,6 +52,18 @@ def extract(data):
 def get_cdrom_name(filename):
     return Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
 
+def get_list_of_offsets(data, header_hex):
+    start_code = convert_to_bytes(header_hex) # Convert it to a byte array so we can use data.find with it
+    
+    offset_list = [] # Find the location of each time these bytes show up in the given file
+    pos = data.find(start_code) # Find the first instance of the start code
+    
+    while pos != -1: # Loop until it can't find any more
+      offset_list.append(pos)
+      pos = data.find(start_code, pos + 1) # Look for another one!
+    
+    return offset_list
+
 def get_text(data, start_offset, end_offset):
     return data[start_offset:end_offset].decode('unicode_escape')
 
@@ -66,7 +71,7 @@ def convert_to_bytes(input):
     return bytes.fromhex(input) # Converts a string that contains a hex number into that number. Simple but this looks cleaner.
 
 def save_json_file(records, directory_name):
-    filename_to_use = f"metadata for {directory_name}.jsonl"
+    filename_to_use = f"{directory_name}/metadata.jsonl"
     print(f"Saving {filename_to_use}...")
     with jsonlines.open(filename_to_use, mode='w') as writer:
         for record in records:
