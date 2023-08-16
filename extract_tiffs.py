@@ -1,5 +1,5 @@
 import os
-from secrets import list_of_TIFF_blobs
+from paths import list_of_TIFF_blobs
 from pathlib import Path
 
 def main():

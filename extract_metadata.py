@@ -1,6 +1,6 @@
 import jsonlines
 from DocumentProfile import DocumentProfile
-from secrets import list_of_metadata_files
+from paths import list_of_metadata_files
 from pathlib import Path
 
 def main():
