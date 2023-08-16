@@ -20,7 +20,6 @@ def save_tiff_files(all_TIFFs, output_folder):
             tiff_file.write(tiff_data) # Save the file!
         print(f"Extracted {tiff_filename}")
 
-
 def extract(data):
     separated_TIFF_files = []
     TIFF_offsets = get_list_of_offsets(data, '49492A00')
@@ -56,8 +55,6 @@ def get_list_of_offsets(data, header_hex):
       pos = data.find(start_code, pos + 1) # Look for another one!
 
     return offset_list
-
-
 
 # Now that everything's defined, run the dang thing!
 if __name__ == "__main__":
