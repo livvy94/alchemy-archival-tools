@@ -86,8 +86,7 @@ if __name__ == "__main__":
 # of this project, I'm assuming all of them start with II.
 # The [2A 00] is hex for the number 42, chosen for its deep philosophical value.
 # Next in the header, the offset of the first image directory. Since this is
-# different for each file, I'm not putting anything in for it when searching
-# through the file.
+# different for each TIFF file, I'm leaving it out of the search.
 
 # It might be possible to use PFAL000S.TOB to get the name
 # of each record, and each filename as it appears when you
