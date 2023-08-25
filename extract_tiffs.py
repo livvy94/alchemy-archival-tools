@@ -1,4 +1,3 @@
-import os
 from paths import list_of_TIFF_blobs
 from pathlib import Path
 
@@ -13,9 +12,14 @@ def main():
         save_tiff_files(all_TIFFs, cdrom_name)
 
 def save_tiff_files(all_TIFFs, output_folder):
-    os.makedirs(output_folder, exist_ok=True) # The folder we're saving the TIFFs to
+    cwd = Path.cwd()
+    filepath_to_use = cwd / "Extracted Data" / output_folder
+
+    if not filepath_to_use.exists():
+        filepath_to_use.mkdir(parents=True)
+
     for index, tiff_data in enumerate(all_TIFFs):
-        tiff_filename = f"{output_folder}/page{index + 1}.tiff"
+        tiff_filename = f"{filepath_to_use}/page{index + 1}.tiff"
         with open(tiff_filename, 'wb') as tiff_file:
             tiff_file.write(tiff_data) # Save the file!
         print(f"Extracted {tiff_filename}")
@@ -39,7 +43,16 @@ def extract(data):
 
 # Helper methods!
 def get_cdrom_name(filename):
-    return Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
+    cdrom_name = Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
+
+    # The next few lines get rid of weird characters that might cause bugs if they're in the folder name
+    special_characters = '\\/*?:;"<>|'
+    result = ""
+    for char in cdrom_name:
+        if char not in special_characters:
+            result += char
+
+    return result
 
 def convert_to_bytes(input):
     return bytes.fromhex(input) # Converts a string that contains a hex number into that number. Simple but this looks cleaner.

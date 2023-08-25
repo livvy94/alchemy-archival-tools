@@ -50,7 +50,16 @@ def extract(data):
 
 # Helper methods!
 def get_cdrom_name(filename):
-    return Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
+    cdrom_name = Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
+
+    # The next few lines get rid of weird characters that might cause bugs if they're in the folder name
+    special_characters = '\\/*?:;"<>|'
+    result = ""
+    for char in cdrom_name:
+        if char not in special_characters:
+            result += char
+
+    return result
 
 def get_list_of_offsets(data, header_hex):
     start_code = convert_to_bytes(header_hex) # Convert it to a byte array so we can use data.find with it
@@ -71,7 +80,13 @@ def convert_to_bytes(input):
     return bytes.fromhex(input) # Converts a string that contains a hex number into that number. Simple but this looks cleaner.
 
 def save_json_file(records, directory_name):
-    filename_to_use = f"{directory_name}/metadata.jsonl"
+    cwd = Path.cwd()
+    filepath_to_use = cwd / "Extracted Data" / directory_name
+    filename_to_use = filepath_to_use / "metadata.jsonl"
+
+    if not filepath_to_use.exists():
+        filepath_to_use.mkdir(parents=True)
+
     print(f"Saving {filename_to_use}...")
     with jsonlines.open(filename_to_use, mode='w') as writer:
         for record in records:
@@ -98,3 +113,5 @@ if __name__ == "__main__":
 
 # TODO: Lines 19-27 should be a helper method that returns all_start_offsets.
 #       It is also used in extract_tiffs.py
+
+# TODO: It's not extracting the EIN correctly! Cross-check with TIFFs
