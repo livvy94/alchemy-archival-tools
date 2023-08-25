@@ -6,7 +6,6 @@ from pathlib import Path
 def main():
     for filename in list_of_metadata_files:
         cdrom_name = get_cdrom_name(filename)
-        print(cdrom_name)
         with open(filename, 'rb') as f:
             data = f.read() # This "data" variable is where the entire file's contents is going to be stored
 
@@ -18,14 +17,15 @@ def main():
 def extract(data):
     start_code = '0023000A' # Every record starts with these hex numbers
     metadata_offsets = get_list_of_offsets(data, start_code)
-    
+
     # Extract each record present
     index = 0 # Keep track of how many records we've looked at
     records = [] # This will contain instances of DocumentProfile
     for start_offset in metadata_offsets: # Loop through each record
         result = []
-        current_offset = start_offset + len(start_code) # Keep track of where we are, starting at the start of the current record
-        
+        current_offset = start_offset + 4 # Keep track of where we are, starting at the start of the current record.
+        # The +4 is to skip past the start_code to the first number of the EIN.
+
         # The EIN is the first field in each record. Get it and add it to the result
         ein_end_offset = data.find(00, current_offset + 1)
         ein = get_text(data, current_offset, ein_end_offset)
@@ -63,14 +63,14 @@ def get_cdrom_name(filename):
 
 def get_list_of_offsets(data, header_hex):
     start_code = convert_to_bytes(header_hex) # Convert it to a byte array so we can use data.find with it
-    
+
     offset_list = [] # Find the location of each time these bytes show up in the given file
     pos = data.find(start_code) # Find the first instance of the start code
-    
+
     while pos != -1: # Loop until it can't find any more
       offset_list.append(pos)
       pos = data.find(start_code, pos + 1) # Look for another one!
-    
+
     return offset_list
 
 def get_text(data, start_offset, end_offset):
