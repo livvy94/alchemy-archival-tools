@@ -1,6 +1,6 @@
 # Don't check extracted data into the repo
-.tiff
-.jsonl
+*.tiff
+*.jsonl
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
