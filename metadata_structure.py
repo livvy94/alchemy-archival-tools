@@ -1,4 +1,4 @@
-class DocumentProfile:
+class record:
     def __init__(self, ein, returntype, state, subcode, subdate, taxyear, taxpayername, totalassets, zipcode):
         self.ein = ein
         self.returntype = returntype

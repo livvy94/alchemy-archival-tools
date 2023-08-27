@@ -1,5 +1,5 @@
 import jsonlines
-from metadata_structure import DocumentProfile
+from metadata_structure import record
 from paths import list_of_metadata_files
 from pathlib import Path
 
@@ -20,7 +20,7 @@ def extract(data):
 
     # Extract each record present
     index = 0 # Keep track of how many records we've looked at
-    records = [] # This will contain instances of DocumentProfile
+    records = [] # This will store the extracted data, and will eventually be saved to a file
     for start_offset in metadata_offsets: # Loop through each record
         result = []
         current_offset = start_offset + 4 # Keep track of where we are, starting at the start of the current record.
@@ -42,7 +42,7 @@ def extract(data):
         
         current_offset = data.find(convert_to_bytes(start_code), (current_offset + 1)) # Set the current offset to the start of the next record.
 
-        temp = DocumentProfile(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+        temp = record(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
         records.append(temp)
         index = index + 1
     return records
