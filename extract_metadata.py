@@ -1,5 +1,5 @@
 import jsonlines
-from DocumentProfile import DocumentProfile
+from metadata_structure import DocumentProfile
 from paths import list_of_metadata_files
 from pathlib import Path
 
