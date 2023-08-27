@@ -98,4 +98,5 @@ if __name__ == "__main__":
 
 # TODO: Generally clean up the code.
 
-# TODO: It's not extracting the EIN correctly! Cross-check with TIFFs
+# TODO: Remove convert_to_bytes from get_list_of_offsets, it has no reason to be there.
+#       The data should already be bytes when passed into it.
