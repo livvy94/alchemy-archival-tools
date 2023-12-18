@@ -7,3 +7,5 @@ This is part of a research project I'm doing with my academic advisor at [IUPUI]
 Each CD-ROM stores the documents as a single gigantic binary file, which is actually countless TIFF files concatenated together. This tool separates them and also extracts relevant metadata as [JSON](https://en.wikipedia.org/wiki/JSON).
 
 Eventually, the documents will be digitally preserved in the PDF-A format and displayed in a searchable database for use by the public and by researchers.
+
+To view our presentation, [click here](https://hdl.handle.net/1805/37104).
