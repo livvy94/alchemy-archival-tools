@@ -87,7 +87,7 @@ def save_json_file(records, directory_name):
     if not filepath_to_use.exists():
         filepath_to_use.mkdir(parents=True)
 
-    print(f"Saving {filename_to_use}...")
+    print(f"Extracted {filename_to_use}")
     with jsonlines.open(filename_to_use, mode='w') as writer:
         for record in records:
             writer.write(record.__dict__)

@@ -34,7 +34,6 @@ def extract(data):
         # If we're at the end of the list, though, we can't do that - index + 1 doesn't exist.
         # To make it work, we can just use the length of the file itself as the last offset.
         second_offset = TIFF_offsets[index + 1] if index + 1 < len(TIFF_offsets) else len(data)
-        print(f"{offset} to {second_offset}")  # debug, delete this line
         separated_TIFF_files.append(data[offset:second_offset])  # Slice out the individual file
 
     return separated_TIFF_files
