@@ -1,4 +1,3 @@
-import jsonlines
 from metadata_structure import record
 from paths import list_of_metadata_files
 from pathlib import Path
@@ -16,6 +15,11 @@ def main():
 ########################################################################
 
 def extract(data):
+    thousands = thousands_generator()
+    thousands_index = 1
+
+
+
     # Validate that this is an Alchemy metadata file
     offset = 0x2000
     header = get_text(data, offset, offset + 3)
@@ -25,7 +29,7 @@ def extract(data):
     start_code = '0000002300' # Every record starts with these hex numbers. MIGHT NOT ALWAYS BE THE SAME!
     metadata_offsets = get_list_of_offsets(data, start_code)
     records = [] # This will store the extracted data, and will eventually be saved to a file
-    
+
     index = 0 #TODO: Figure out how to make this more Pythonic... You're not supposed to use indices like this
     #Extract each record present
     for start_offset in metadata_offsets:
@@ -33,9 +37,9 @@ def extract(data):
         try:
             next_offset = metadata_offsets[index + 1]
         except IndexError as e: # This will happen after processing the last offset.
-            break # Breaking out of the loop here is not best practice, but I want to get this working. 
+            break # Breaking out of the loop here is not best practice, but I want to get this working.
         offset = start_offset + 5 # Keep track of where we are, starting at the start of the current record. +5 skips to the first number of the EIN
-        
+
         while offset < next_offset: # Stop if it starts to bleed into the next record
             current_string_length = data[offset] # Save this number, which is how many characters the string we're about to save has
             offset = offset + 1 # Now that we have the length, seek to the first character in the string
@@ -95,12 +99,12 @@ def save_csv_file(records, directory_name):
         for record in records:
             print(record)
             writer.writerow(record)
-    
+
 def thousands_generator():
     thousands = []
     current_number = 2
     for _ in range(40): # 40 is a pretty high number. There probably won't be any metadata files huger than that.
-        thousands.append(current_number * 1000)
+        thousands.append(0x1000 * current_number)
         current_number += 2
     return thousands
 
