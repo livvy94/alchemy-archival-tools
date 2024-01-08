@@ -91,11 +91,19 @@ def save_csv_file(records, directory_name):
 
     print(f"Extracted {filename_to_use}")
     with open(filename_to_use, mode='w', newline='') as csv_file:
-        writer = csv.writer(filename_to_use)
+        writer = csv.writer(csv_file)
         for record in records:
             print(record)
             writer.writerow(record)
     
+def thousands_generator():
+    thousands = []
+    current_number = 2
+    for _ in range(40): # 40 is a pretty high number. There probably won't be any metadata files huger than that.
+        thousands.append(current_number * 1000)
+        current_number += 2
+    return thousands
+
 # def save_json_file(records, directory_name):
 #     cwd = Path.cwd()
 #     filepath_to_use = cwd / "Extracted Data" / directory_name
@@ -117,3 +125,18 @@ if __name__ == "__main__":
 
 # TODO: Remove convert_to_bytes from get_list_of_offsets, it has no reason to be there.
 #       The data should already be bytes when passed into it.
+
+# 12/18/23
+# I have discovered that every 2000 bytes, there is another "ALW" header.
+# This is always right smack dab in the middle of a record, and when this happens it throws off the record it's currently dumping.
+# It doesn't throw off the entire dump, thankfully! But this is still a big obstacle.
+# TODO: Make a method that generates a list, 2000, 4000, 6000, etc. - DONE!
+# Make an index number for the current one you're in
+# Sanity check - is the current offset greater than the filesize? If so, break.
+# Sanity check - are the first three bytes of the current block "ALW"? If not, break. 
+# After dumping each string, run a check against the next offset and the upcoming index.
+#    If you haven't gone past it yet, carry on as usual.
+#    If you have, make the current offset to that thousand, plus 17 (this is where the next field will be!) and carry on.
+
+
+

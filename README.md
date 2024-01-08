@@ -8,4 +8,4 @@ Each CD-ROM stores the documents as a single gigantic binary file, which is actu
 
 Eventually, the documents will be digitally preserved in the PDF-A format and displayed in a searchable database for use by the public and by researchers.
 
-To view our presentation, [click here](https://hdl.handle.net/1805/37104).
+To view our presentation, [click here](https://hdl.handle.net/1805/37104). The description of the event can be found [here](https://clirevents2023.sched.com/event/1On64/w02-combo-unlocking-archives-email-preservation-legacy-database-rescue-and-digital-project-management).
