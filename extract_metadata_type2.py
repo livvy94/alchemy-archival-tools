@@ -15,46 +15,34 @@ def main():
 ########################################################################
 
 def extract(data):
-    thousands = thousands_generator()
+    extracted_text = []
+
+    thousands = thousands_generator() # This returns 0x2000, 0x4000, etc.
     thousands_index = 1
 
+    # Because there's an "ALW" header every 0x2000 bytes, even in the middle of a record,
+    # we're having to work through the file in chunks of that size
+    for thousand in thousands:
+        offset = thousand
+        if offset > len(data): # Stop if the offset is greater than how big the file is
+            print("End of file reached.")
+            break
 
+        # Check for the ALW header
+        header = get_text(data, offset, offset + 3)
+        if (header != "ALW"):
+            raise ValueError(f"This doesn't look like an Alchemy metadata file. 'ALW' not found at {hex(offset)}")
 
-    # Validate that this is an Alchemy metadata file
-    offset = 0x2000
-    header = get_text(data, offset, offset + 3)
-    if (header != "ALW"):
-        raise ValueError("This doesn't look like an Alchemy metadata file. 'ALW' not found at 0x2000")
+        #Navigate to where the first field will be
+        offset + offset + 17
 
-    start_code = '0000002300' # Every record starts with these hex numbers. MIGHT NOT ALWAYS BE THE SAME!
-    metadata_offsets = get_list_of_offsets(data, start_code)
-    records = [] # This will store the extracted data, and will eventually be saved to a file
+        while offset < thousands[thousands_index + 1]:
+            #TODO: extract the text, using the length codes
+            print("foo")
 
-    index = 0 #TODO: Figure out how to make this more Pythonic... You're not supposed to use indices like this
-    #Extract each record present
-    for start_offset in metadata_offsets:
-        single_record = [] # This will store a single record. I think doing it like this will make saving the CSV file easier
-        try:
-            next_offset = metadata_offsets[index + 1]
-        except IndexError as e: # This will happen after processing the last offset.
-            break # Breaking out of the loop here is not best practice, but I want to get this working.
-        offset = start_offset + 5 # Keep track of where we are, starting at the start of the current record. +5 skips to the first number of the EIN
-
-        while offset < next_offset: # Stop if it starts to bleed into the next record
-            current_string_length = data[offset] # Save this number, which is how many characters the string we're about to save has
-            offset = offset + 1 # Now that we have the length, seek to the first character in the string
-            end_offset = offset + current_string_length - 1 # Use the number we just saved to work out where the end of the string is
-
-            result = get_text(data, offset, end_offset) # Interpret the data between the two offsets as text, and save it!
-            single_record.append(result)
-            offset = end_offset + 5 # Skip ahead to the next field
-
-        records.append(single_record)
-        index = index + 1 # Again, this needs to be more Pythonic.
-
-    return records
-
+#############################################################################################################################
 # Helper methods!
+
 def get_cdrom_name(filename):
     cdrom_name = Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
 
