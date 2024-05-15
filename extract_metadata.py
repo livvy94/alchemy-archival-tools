@@ -50,16 +50,16 @@ def extract(data):
 
 # Helper methods!
 def get_cdrom_name(filename):
-    cdrom_name = Path(filename).resolve().parents[2].name # This takes the whole filepath and returns just the name of the folder.
-
+    cdrom_name = Path(filename).resolve().parents[3].name # This takes the whole filepath and returns just the name of the folder.
+    folder_name = Path(filename).resolve().parents[2].name
     # The next few lines get rid of weird characters that might cause bugs if they're in the folder name
     special_characters = '\\/*?:;"<>|'
     result = ""
-    for char in cdrom_name:
+    for char in folder_name:
         if char not in special_characters:
             result += char
 
-    return result
+    return cdrom_name + "\\" + result
 
 def get_list_of_offsets(data, header_hex):
     start_code = convert_to_bytes(header_hex) # Convert it to a byte array so we can use data.find with it
