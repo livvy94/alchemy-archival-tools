@@ -1,5 +1,5 @@
 import jsonlines
-from metadata_structure import record
+from metadata_structure import record, recordtype2
 from paths import list_of_metadata_files
 from pathlib import Path
 
@@ -42,7 +42,7 @@ def extract(data):
         
         current_offset = data.find(convert_to_bytes(start_code), (current_offset + 1)) # Set the current offset to the start of the next record.
 
-        temp = record(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
+        temp = recordtype2(result[0], result[1], result[2], result[3], result[4], result[5], result[6], result[7], result[8])
         records.append(temp)
         index = index + 1
     return records

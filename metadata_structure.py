@@ -9,3 +9,15 @@ class record:
         self.taxpayername = taxpayername
         self.totalassets = totalassets
         self.zipcode = zipcode
+
+class recordtype2:
+    def __init__(self, ein, taxyear, taxpayername, state, zipcode, returntype, subcode, totalassets, subdate): # this line being a different order is what fixed it
+        self.ein = ein
+        self.taxyear = taxyear
+        self.taxpayername = taxpayername
+        self.state = state
+        self.zipcode = zipcode
+        self.returntype = returntype
+        self.subcode = subcode
+        self.totalassets = totalassets
+        self.subdate = subdate
